@@ -10,6 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @State private var image: Image?
     @State private var showingImagePicker = false
+    @State private var inputImage: UIImage?
 
     var body: some View {
         VStack {
@@ -21,9 +22,17 @@ struct ContentView: View {
                showingImagePicker = true
             }
         }
+        .onChange(of: inputImage) { _ in loadImage() }
         .sheet(isPresented: $showingImagePicker) {
-            ImagePicker()
+            ImagePicker(image: $inputImage)
         }
+    }
+    
+    func loadImage() {
+        guard let inputImage = inputImage else { return }
+        image = Image(uiImage: inputImage)
+        
+        UIImageWriteToSavedPhotosAlbum(inputImage, nil, nil, nil)
     }
 }
 
